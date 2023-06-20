@@ -3,14 +3,19 @@ addEventListener('fetch', event => {
 })
 
 async function handleRequest(request) {
-  const acceptLanguage = request.headers.get('Accept-Language')
+  const acceptLanguage = request.headers.get('accept-language')
 
-  if (request.url.includes('kiska.com') && acceptLanguage && acceptLanguage.startsWith('el')) {
-    const newUrl = request.url.replace('kiska.com', 'kiska.com/cn')
-    return Response.redirect(newUrl, 301)
+  // Check if the 'accept-language' header includes simplified Chinese (zh-CN)
+  if (acceptLanguage && acceptLanguage.includes('zh-CN')) {
+    const url = new URL(request.url)
+
+    // Redirect to 'electricjellyfish.org/secure'
+    url.pathname = '/secure'
+
+    return Response.redirect(url.toString(), 302)
   }
 
-  // Forward the request to the origin server if no redirect is necessary
+  // Pass the request through without redirection
   return fetch(request)
 }
 
